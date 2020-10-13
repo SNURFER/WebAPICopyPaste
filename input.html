@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+
+</style>
+</head>
+<body>
+
+<p>sample test for copy paste. [LSD] </p>
+
+<input type="text" value="Hello World" id="myInput">
+<input type="text" value="" id="myOutput">
+
+<div class="tooltip">
+<button onclick="copyFunction()">
+  Copy text
+  </button>
+<button onclick="pasteFunction()">
+  Paste text
+  </button>
+</div>
+
+<p>텍스트 복붙 테스트 데스테</p>
+
+<script>
+document.addEventListener("copy", copyProcess, false);
+document.addEventListener("paste", pasteProcess, false);
+
+function copyFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+	//setClipboardContents();
+}
+
+function pasteFunction() {
+  var pasteText = document.getElementById("myOutput");
+  var copyText = document.getElementById("myInput");
+  pasteText.value = copyText.value;
+  document.execCommand("paste");
+//	getClipboardContents();
+}
+
+async function setClipboardContents() {
+	var text = document.getElementById("myInput");
+	
+    try {
+    const clipboardItems = await navigator.clipboard.writeText(text.value);
+	} catch (err) {
+		console.log(err.name, err.message);
+	}
+	
+}
+
+async function getClipboardContents() {
+  try {
+    const clipboardItems = await navigator.clipboard.read();
+    for (const clipboardItem of clipboardItems) {
+      for (const type of clipboardItem.types) {
+        const textBlob = await clipboardItem.getType("text/plain");
+		var pasteText = document.getElementById("myOutput");
+		const text = await (new Response(textBlob)).text();
+		pasteText.value = text;
+      }
+    }
+  } catch (err) {
+    console.log(err.name, err.message);
+  }
+}
+
+function copyProcess(e) {
+	console.log("copyProcess is called. it means copy event has been executed");
+}
+
+function pasteProcess(e) {
+	console.log("pasteProcess is called. it means paste event has been executed");
+}
+</script>
+
+</body>
+
+</html>
